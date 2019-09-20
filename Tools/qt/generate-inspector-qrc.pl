@@ -83,9 +83,6 @@ sub getDstFile {
     my ($volume, $directories, $file) = File::Spec->splitpath($path);
     my @dirs = File::Spec->splitdir($directories);
 
-    # Images/gtk/Something -> Images/Something
-    @dirs = grep { !/^gtk$/ } @dirs;
-
     $directories = File::Spec->catdir(@dirs);
     return File::Spec->catpath($volume, $directories, $file);
 }
