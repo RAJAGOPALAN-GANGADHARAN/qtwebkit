@@ -50,7 +50,7 @@ list(APPEND WebCore_PRIVATE_FRAMEWORK_HEADERS
 
     page/SpatialNavigation.h
 
-    platform/graphics/MediaPlayerPrivate.h
+    platform/SchemeRegistry.h
 
     platform/graphics/qt/ImageBufferDataQt.h
     platform/graphics/qt/MediaPlayerPrivateQt.h
