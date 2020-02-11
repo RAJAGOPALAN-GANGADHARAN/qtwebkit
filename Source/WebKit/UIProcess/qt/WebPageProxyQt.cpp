@@ -113,7 +113,7 @@ void WebPageProxy::willSetInputMethodState()
 
 void WebPageProxy::updateEditorState(const EditorState&)
 {
-    //WIP
+    //QTFIXME
 }
 
 } // namespace WebKit

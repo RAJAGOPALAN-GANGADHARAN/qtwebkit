@@ -51,7 +51,7 @@
 #include <wtf/spi/darwin/XPCSPI.h>
 #endif
 
-#if USE(GLIB)
+#if USE(GLIB) && !PLATFORM(QT)
 #include "GSocketMonitor.h"
 #endif
 
@@ -382,13 +382,12 @@ private:
     Vector<int> m_fileDescriptors;
     int m_socketDescriptor;
     std::unique_ptr<UnixMessage> m_pendingOutputMessage;
-#if USE(GLIB)
+#if PLATFORM(QT)
+    QSocketNotifier* m_socketNotifier;
+#elif USE(GLIB)
     GRefPtr<GSocket> m_socket;
     GSocketMonitor m_readSocketMonitor;
     GSocketMonitor m_writeSocketMonitor;
-#endif
-#if PLATFORM(QT)
-    QSocketNotifier* m_socketNotifier;
 #endif
 #elif OS(DARWIN)
     // Called on the connection queue.

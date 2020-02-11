@@ -200,6 +200,12 @@ list(APPEND WebCore_SOURCES
     platform/text/hyphen/HyphenationLibHyphen.cpp
 )
 
+if (APPLE)
+    list(APPEND WebCore_SOURCES
+        editing/SmartReplaceCF.cpp
+    )
+endif ()
+
 QTWEBKIT_GENERATE_MOC_FILES_CPP(WebCore
     platform/network/qt/DNSResolveQueueQt.cpp
     platform/qt/MainThreadSharedTimerQt.cpp
@@ -475,4 +481,10 @@ if (APPLE)
     list(APPEND WebCore_SOURCES
         platform/cf/SharedBufferCF.cpp
     )
+
+    if (HAVE_FONTCONFIG)
+        list(APPEND WebCoreTestSupport_INCLUDE_DIRECTORIES
+            ${FONTCONFIG_INCLUDE_DIR}
+        )
+    endif ()
 endif ()

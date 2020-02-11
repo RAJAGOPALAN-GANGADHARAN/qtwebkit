@@ -40,11 +40,11 @@
 #include <wtf/StdLibExtras.h>
 #include <wtf/UniStdExtras.h>
 
-#if USE(GLIB)
-#include <gio/gio.h>
-#elif PLATFORM(QT)
+#if PLATFORM(QT)
 #include <QPointer>
 #include <QSocketNotifier>
+#elif USE(GLIB)
+#include <gio/gio.h>
 #endif
 
 // Although it's available on Darwin, SOCK_SEQPACKET seems to work differently
@@ -52,7 +52,7 @@
 #if defined(SOCK_SEQPACKET) && !OS(DARWIN)
 #define SOCKET_TYPE SOCK_SEQPACKET
 #else
-#if USE(GLIB)
+#if USE(GLIB) && !PLATFORM(QT)
 #define SOCKET_TYPE SOCK_STREAM
 #else
 #define SOCKET_TYPE SOCK_DGRAM
@@ -98,7 +98,7 @@ static_assert(sizeof(MessageInfo) + sizeof(AttachmentInfo) * attachmentMaxAmount
 void Connection::platformInitialize(Identifier identifier)
 {
     m_socketDescriptor = identifier;
-#if USE(GLIB)
+#if USE(GLIB) && !PLATFORM(QT)
     m_socket = adoptGRef(g_socket_new_from_fd(m_socketDescriptor, nullptr));
 #endif
     m_readBuffer.reserveInitialCapacity(messageMaxSize);
@@ -111,7 +111,7 @@ void Connection::platformInitialize(Identifier identifier)
 
 void Connection::platformInvalidate()
 {
-#if USE(GLIB)
+#if USE(GLIB) && !PLATFORM(QT)
     // In the GLib platform the socket descriptor is owned by GSocket.
     m_socket = nullptr;
 #else
@@ -122,7 +122,7 @@ void Connection::platformInvalidate()
     if (!m_isConnected)
         return;
 
-#if USE(GLIB)
+#if USE(GLIB) && !PLATFORM(QT)
     m_readSocketMonitor.stop();
     m_writeSocketMonitor.stop();
 #endif
@@ -378,7 +378,12 @@ bool Connection::open()
 
     RefPtr<Connection> protectedThis(this);
     m_isConnected = true;
-#if USE(GLIB)
+#if PLATFORM(QT)
+    m_socketNotifier = m_connectionQueue->registerSocketEventHandler(m_socketDescriptor, QSocketNotifier::Read,
+        [protectedThis] {
+            protectedThis->readyReadHandler();
+        });
+#elif USE(GLIB)
     m_readSocketMonitor.start(m_socket.get(), G_IO_IN, m_connectionQueue->runLoop(), [protectedThis] (GIOCondition condition) -> gboolean {
         if (condition & G_IO_HUP || condition & G_IO_ERR || condition & G_IO_NVAL) {
             protectedThis->connectionDidClose();
@@ -393,11 +398,6 @@ bool Connection::open()
         ASSERT_NOT_REACHED();
         return G_SOURCE_REMOVE;
     });
-#elif PLATFORM(QT)
-    m_socketNotifier = m_connectionQueue->registerSocketEventHandler(m_socketDescriptor, QSocketNotifier::Read,
-        [protectedThis] {
-            protectedThis->readyReadHandler();
-        });
 #endif
 
     // Schedule a call to readyReadHandler. Data may have arrived before installation of the signal handler.
@@ -530,7 +530,7 @@ bool Connection::sendOutputMessage(UnixMessage& outputMessage)
         if (errno == EINTR)
             continue;
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-#if USE(GLIB)
+#if USE(GLIB) && !PLATFORM(QT)
             m_pendingOutputMessage = makeUnique<UnixMessage>(WTFMove(outputMessage));
             m_writeSocketMonitor.start(m_socket.get(), G_IO_OUT, m_connectionQueue->runLoop(), [this, protectedThis = makeRef(*this)] (GIOCondition condition) -> gboolean {
                 if (condition & G_IO_OUT) {
