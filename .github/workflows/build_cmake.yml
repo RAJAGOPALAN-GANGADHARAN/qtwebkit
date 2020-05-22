@@ -6,6 +6,7 @@ on:
       - qtwebkit-dev-wip
       - wk2
       - qtwebkit-5.212
+      - exp_qtci_qts
   pull_request:
     branches:
       - qtwebkit-dev-wip
