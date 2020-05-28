@@ -114,7 +114,7 @@ jobs:
         endif()
 
     - name: Download Qt Windows
-      id: qt
+      id: qt_dow
       if: runner.os == 'Windows'
       shell: powershell  -NoProfile -NonInteractive -File {0}
       env: 
