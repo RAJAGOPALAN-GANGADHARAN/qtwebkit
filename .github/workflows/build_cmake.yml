@@ -113,6 +113,24 @@ jobs:
           )
         endif()
 
+    - name: Download Qt Windows
+      id: qt
+      if: runner.os == 'Windows'
+      shell: powershell  -NoProfile -NonInteractive -File {0}
+      env: 
+        QT_MODULES: "qtbase qtdeclarative qtlocation qtmultimedia qtsensors qtwebchannel qtsvg qtxmlpatterns"
+      run: |
+        pip3 install requests semantic_version lxml
+        export QT_INSTALL_DIR="C:/Qt"
+        export extra=""
+        if [[ "${{ matrix.config.environment_script }}" == *"vcvars64.bat"* ]];then
+          export TOOLCHAIN="win64_msvc2017_64"
+        elif [[ "${{ matrix.config.environment_script }}" == *"vcvars32.bat"* ]];then
+          export="win32_msvc2017"
+          export="--mingw win32_mingw730"
+        fi
+        py Tools/qt/qt-downloader windows desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtwinextras" ${extra}
+
     - name: Download Qt
       id: qt
       if: runner.os != 'Linux'
@@ -120,32 +138,25 @@ jobs:
       env: 
         QT_MODULES: "qtbase qtdeclarative qtlocation qtmultimedia qtsensors qtwebchannel qtsvg qtxmlpatterns"
       run: |
+        #!/bin/bash
         pip3 install requests semantic_version lxml
-        echo "PASSED"
-        if ("${{ runner.os }}" STREQUAL "Windows")
-          echo "INSIDE"
-          set(QT_INSTALL_DIR "C:/Qt")
-          export extra=""
-          if ("x${{ matrix.config.environment_script }}" STREQUAL "x")
-            export TOOLCHAIN="win32_mingw73"
-          elseif ("${{ matrix.config.environment_script }}" MATCHES "vcvars64.bat")
-            export TOOLCHAIN="win64_msvc2017_64"
-          elseif ("${{ matrix.config.environment_script }}" MATCHES "vcvars32.bat")
-            export="win32_msvc2017"
-            export="--mingw win32_mingw730"
-          endif()
-          py 3rdparty/qt-downloader windows desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtwinextras" ${extra}
-        elseif ("${{ runner.os }}" STREQUAL "Linux")
-          set(url_os "linux_x64")
-          set(qt_package_arch_suffix "gcc_64")
-          set(qt_dir_prefix "${qt_version}/gcc_64")
-          set(qt_package_suffix "-Linux-RHEL_7_6-GCC-Linux-RHEL_7_6-X86_64")
-        elseif ("${{ runner.os }}" STREQUAL "macOS")
-          set(url_os "mac_x64")
-          set(qt_package_arch_suffix "clang_64")
-          set(qt_dir_prefix "${qt_version}/clang_64")
-          set(qt_package_suffix "-MacOS-MacOS_10_13-Clang-MacOS-MacOS_10_13-X86_64")
-        endif()
+        which py
+        if [ "${{ runner.os }}" == "Windows" ];then
+            export QT_INSTALL_DIR="C:/Qt"
+            export extra=""
+            if [[ "${{ matrix.config.environment_script }}" == *"vcvars64.bat"* ]];then
+              export TOOLCHAIN="win64_msvc2017_64"
+            elif [[ "${{ matrix.config.environment_script }}" == *"vcvars32.bat"* ]];then
+              export="win32_msvc2017"
+              export="--mingw win32_mingw730"
+            fi
+          py Tools/qt/qt-downloader windows desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtwinextras" ${extra}
+        elif [ "${{ runner.os }}" == "macOS" ];then
+          export url_os="mac_x64"
+          export qt_package_arch_suffix="clang_64"
+          export qt_dir_prefix="${qt_version}/clang_64"
+          export qt_package_suffix="-MacOS-MacOS_10_13-Clang-MacOS-MacOS_10_13-X86_64"
+        fi
 
 
     - name: Download ccache
