@@ -162,7 +162,7 @@ class QtWebKitConan(ConanFile):
             self.copy("libxslt.dll", "./bin", "bin")
             # MinGW
             self.copy("libxml2-2.dll", "./bin", "bin")
-            self.copy("libxml2-2.dll", "./bin", "bin")
+            self.copy("libxslt-1.dll", "./bin", "bin")
 
     def package(self):
         pass
