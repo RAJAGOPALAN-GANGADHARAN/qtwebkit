@@ -181,7 +181,7 @@ jobs:
             TOOLCHAIN="win32_msvc2017"
             TOOLS_ARGS="--mingw win32_mingw730"
           fi
-          WIN_QT_PATH=wslpath -w ${QT_INSTALL_DIR}
+          WIN_QT_PATH=$(wslpath -w ${QT_INSTALL_DIR})
           echo "::set-output name=qt_dir::${QT_INSTALL_DIR}"
         elif [ "${{ runner.os }}" == "macOS" ]; then
           OS="macos"
