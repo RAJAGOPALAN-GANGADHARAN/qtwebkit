@@ -131,35 +131,35 @@ jobs:
     #     fi
     #     py Tools/qt/qt-downloader windows desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtwinextras" ${extra}
 
-    - name: Download Qt Windows
-      id: qt-win
-      if: runner.os == 'Windows'
-      shell: powershell  -NoProfile -NonInteractive -File {0}
-      env: 
-        QT_MODULES: "qtbase qtdeclarative qtlocation qtmultimedia qtsensors qtwebchannel qtsvg qtxmlpatterns"
-      run: |
-        #!/bin/bash
-        if [ "${{ runner.os }}" == "Windows" ]; then
-          OS="windows"
-          ADDITIONAL_MODULES="qtwinextras"
-          PY=py
-          if [[ "${{ matrix.config.environment_script }}" == *"vcvars64.bat"* ]]; then
-            TOOLCHAIN="win64_msvc2017_64"
-          elif [[ "${{ matrix.config.environment_script }}" == *"vcvars32.bat"* ]]; then
-            TOOLCHAIN="win32_msvc2017"
-            TOOLS_ARGS="--mingw win32_mingw730"
-          fi
-          ::set-output name=qt_dir::
-        elif [ "${{ runner.os }}" == "macOS" ]; then
-          OS="macos"
-          TOOLCHAIN=clang_64
-          ADDITIONAL_MODULES="qtmacextras"
-          PY=python3
-          QT_INSTALL_DIR="~/Qt"
-          ::set-output name=qt_dir::${qt_dir}
-        fi
-        ${PY} -m pip install requests semantic_version lxml
-        ${PY} Tools/qt/qt-downloader ${OS} desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} ${ADDITIONAL_MODULES}" ${TOOLS_ARGS}
+    # - name: Download Qt Windows
+    #   id: qt-win
+    #   if: runner.os == 'Windows'
+    #   shell: powershell  -NoProfile -NonInteractive -File {0}
+    #   env: 
+    #     QT_MODULES: "qtbase qtdeclarative qtlocation qtmultimedia qtsensors qtwebchannel qtsvg qtxmlpatterns"
+    #   run: |
+    #     #!/bin/bash
+    #     if [ "${{ runner.os }}" == "Windows" ]; then
+    #       OS="windows"
+    #       ADDITIONAL_MODULES="qtwinextras"
+    #       PY=py
+    #       if [[ "${{ matrix.config.environment_script }}" == *"vcvars64.bat"* ]]; then
+    #         TOOLCHAIN="win64_msvc2017_64"
+    #       elif [[ "${{ matrix.config.environment_script }}" == *"vcvars32.bat"* ]]; then
+    #         TOOLCHAIN="win32_msvc2017"
+    #         TOOLS_ARGS="--mingw win32_mingw730"
+    #       fi
+    #       ::set-output name=qt_dir::
+    #     elif [ "${{ runner.os }}" == "macOS" ]; then
+    #       OS="macos"
+    #       TOOLCHAIN=clang_64
+    #       ADDITIONAL_MODULES="qtmacextras"
+    #       PY=python3
+    #       QT_INSTALL_DIR="~/Qt"
+    #       ::set-output name=qt_dir::${qt_dir}
+    #     fi
+    #     ${PY} -m pip install requests semantic_version lxml
+    #     ${PY} Tools/qt/qt-downloader ${OS} desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} ${ADDITIONAL_MODULES}" ${TOOLS_ARGS}
 
 
     - name: Download Qt
@@ -180,13 +180,14 @@ jobs:
             TOOLCHAIN="win32_msvc2017"
             TOOLS_ARGS="--mingw win32_mingw730"
           fi
+          echo "$(pwd)"
         elif [ "${{ runner.os }}" == "macOS" ]; then
           OS="macos"
           TOOLCHAIN=clang_64
           ADDITIONAL_MODULES="qtmacextras"
           PY=python3
           QT_INSTALL_DIR="~/Qt"
-          ::set-output name=qt_dir::${qt_dir}
+          echo "::set-output name=qt_dir::${QT_INSTALL_DIR}"
         fi
         ${PY} -m pip install requests semantic_version lxml
         ${PY} Tools/qt/qt-downloader ${OS} desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} ${ADDITIONAL_MODULES}" ${TOOLS_ARGS}
