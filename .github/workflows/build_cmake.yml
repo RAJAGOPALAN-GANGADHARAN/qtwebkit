@@ -225,12 +225,12 @@ jobs:
     - name: Configure (MSVC)
       if: runner.os == 'Windows' && matrix.config.environment_script != ''
       shell: cmd
-      run: py Tools\qt\build-qtwebkit-conan.py --configure --cmakeargs="%cmake_args%" --qt="${{ steps.qt.outputs.qt_dir }}" || exit /b 1
+      run: py Tools\qt\build-qtwebkit-conan.py --configure --cmakeargs="%cmake_args%" --qt="%QT_INSTALL_DIR%" || exit /b 1
 
     - name: Configure (macOS/Conan)
       if: runner.os == 'macOS'
       shell: bash --noprofile --norc -eo pipefail -x {0}
-      run: Tools/qt/build-qtwebkit-conan.py --configure --cmakeargs="$cmake_args" --qt="${{ steps.qt.outputs.qt_dir }}"
+      run: Tools/qt/build-qtwebkit-conan.py --configure --cmakeargs="$cmake_args" --qt="${QT_INSTALL_DIR}"
 
 #    - uses: actions/upload-artifact@v1
 #      with:
