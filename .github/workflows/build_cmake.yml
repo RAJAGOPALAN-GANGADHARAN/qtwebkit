@@ -140,11 +140,22 @@ jobs:
       run: |
         #!/bin/bash
         pip3 install requests semantic_version lxml
+        QT_INSTALL_DIR="~/Qt"
         if [ "${{ runner.os }}" == "Windows" ]; then
-          echo "Windows"
+            OS="windows"
+            ADDITIONAL_MODULES="qtwinextras"
+            if [[ "${{ matrix.config.environment_script }}" == *"vcvars64.bat"* ]]; then
+              TOOLCHAIN="win64_msvc2017_64"
+            elif [[ "${{ matrix.config.environment_script }}" == *"vcvars32.bat"* ]]; then
+              TOOLCHAIN="win32_msvc2017"
+              TOOLS_ARGS="--mingw win32_mingw730"
+            fi
         elif [ "${{ runner.os }}" == "macOS" ]; then
-          echo "Mac"
+          OS="macos"
+          TOOLCHAIN=clang_64
+          ADDITIONAL_MODULES="qtmacextras"
         fi
+        python3 Tools/qt/qt-downloader ${OS} desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} ${ADDITIONAL_MODULES}" ${TOOLS_ARGS}
 
 
     - name: Download ccache
