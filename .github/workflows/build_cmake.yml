@@ -168,6 +168,7 @@ jobs:
         python3 Tools/qt/qt-downloader macos desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtmacextras"
         QTDIR="${QT_INSTALL_DIR}/${QT_VERSION}/${TOOLCHAIN}"
         echo "::set-output name=qt_dir::${QTDIR}"
+        Tools/qt/license_writer.sh
         ls ${QT_DIR}
 
 
