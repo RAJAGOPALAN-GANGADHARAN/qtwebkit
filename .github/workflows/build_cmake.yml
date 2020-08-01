@@ -148,7 +148,7 @@ jobs:
           $DIR="msvc2017"
         }
         py -m pip install requests semantic_version lxml
-        py Tools/qt/qt-downloader windows desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtwinextras"
+        py Tools/qt/qt-downloader windows desktop 5.14.1 ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtwinextras"
         QTDIR="${QT_INSTALL_DIR}/${QT_VERSION}/${DIR}"
         echo "::set-output name=qt_dir::${QTDIR}"
 
@@ -165,6 +165,7 @@ jobs:
         python3 Tools/qt/qt-downloader macos desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtmacextras"
         QTDIR="${QT_INSTALL_DIR}/${QT_VERSION}/${TOOLCHAIN}"
         echo "::set-output name=qt_dir::${QTDIR}"
+        ls ${QT_DIR}
 
 
     # - name: Download Qt
