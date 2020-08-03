@@ -134,7 +134,7 @@ jobs:
         QTDIR="${QT_INSTALL_DIR}/${QT_VERSION}/${DIR}"
         echo ${QTDIR}
         Tools/qt/license_writer.sh
-        WINDOWS_PATH=$(wslpath -w ${QTDIR})
+        WINDOWS_PATH=$(wsl.exe wslpath -w ${QTDIR})
         echo "::set-output name=qt_dir::${WINDOWS_PATH}"
     - name: Download Qt Mac
       id: qt_mac
