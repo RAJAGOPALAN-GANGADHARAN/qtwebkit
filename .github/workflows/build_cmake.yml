@@ -123,6 +123,8 @@ jobs:
         QT_INSTALL_DIR: "D:/Qt" 
       run: |
         where.exe 7z
+        echo ${QT_MODULES}
+        echo ${QT_INSTALL_DIR}
         py -m pip install requests semantic_version lxml 2>&1
         $CONFIG="${{ matrix.config.environment_script }}"
         if($CONFIG -Match "vcvars64.bat"){
