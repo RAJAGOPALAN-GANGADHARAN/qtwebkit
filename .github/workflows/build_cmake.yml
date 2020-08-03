@@ -122,7 +122,7 @@ jobs:
         #!/bin/bash
         py -m pip install requests semantic_version lxml wsl-path-converter
         CONFIG="${{ matrix.config.environment_script }}"
-        $QT_INSTALL_DIR="${PWD}/Qt"
+        QT_INSTALL_DIR="${PWD}/Qt"
         if [[ $CONFIG == *"vcvars64.bat"* ]]; then
           TOOLCHAIN="win64_msvc2017_64"
           DIR="msvc2017_64"
