@@ -124,8 +124,6 @@ jobs:
       run: |
         where.exe 7z
         echo ${QT_VERSION}
-        choco install 7zip.install --force
-        where.exe 7z
         $CONFIG="${{ matrix.config.environment_script }}"
         if($CONFIG -Match "vcvars64.bat"){
           $TOOLCHAIN="win64_msvc2017_64"
@@ -137,6 +135,7 @@ jobs:
         py -m pip install requests semantic_version lxml
         py Tools/qt/qt-downloader windows desktop 5.14.1 ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtwinextras"
         $QTDIR="${QT_INSTALL_DIR}/${QT_VERSION}/${DIR}"
+        echo ${QTDIR}
         Tools/qt/license_writer.sh
         echo "::set-output name=qt_dir::${QTDIR}"
 
