@@ -124,18 +124,19 @@ jobs:
         CONFIG="${{ matrix.config.environment_script }}"
         QT_INSTALL_DIR="${PWD}/Qt"
         if [[ $CONFIG == *"vcvars64.bat"* ]]; then
-          TOOLCHAIN="win64_msvc2017_64"
+          export TOOLCHAIN="win64_msvc2017_64"
           DIR="msvc2017_64"
         elif [[ $CONFIG == *"vcvars32.bat"* ]]; then
-          TOOLCHAIN="win32_msvc2017"
+          export TOOLCHAIN="win32_msvc2017"
           DIR="msvc2017"
         fi
         py Tools/qt/qt-downloader windows desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtwinextras"
-        QTDIR="${QT_INSTALL_DIR}/${QT_VERSION}/${DIR}"
+        export QTDIR="${QT_INSTALL_DIR}/${QT_VERSION}/${DIR}"
         echo ${QTDIR}
         Tools/qt/license_writer.sh
-        WINDOWS_PATH=$(wsl.exe wslpath -w ${QTDIR})
-        echo "::set-output name=qt_dir::${WINDOWS_PATH}"
+        echo "::set-env name=TOOL::$DIR"
+
+
     - name: Download Qt Mac
       id: qt_mac
       if: runner.os == 'macOS'
@@ -216,7 +217,9 @@ jobs:
     - name: Configure (MSVC)
       if: runner.os == 'Windows' && matrix.config.environment_script != ''
       shell: cmd
-      run: py Tools\qt\build-qtwebkit-conan.py --configure --cmakeargs="%cmake_args%" --qt="${{ steps.qt_win.outputs.qt_dir }}" || exit /b 1
+      run: /
+      set qt_dir=%cd%\Qt\%QT_VERSION%\%TOOL%
+      py Tools\qt\build-qtwebkit-conan.py --configure --cmakeargs="%cmake_args%" --qt="%qt_dir%" || exit /b 1
 
     - name: Configure (macOS/Conan)
       if: runner.os == 'macOS'
