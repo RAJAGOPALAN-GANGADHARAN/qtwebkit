@@ -218,8 +218,8 @@ jobs:
       if: runner.os == 'Windows' && matrix.config.environment_script != ''
       shell: cmd
       run: /
-      set qt_dir=%cd%\Qt\%QT_VERSION%\%TOOL%
-      py Tools\qt\build-qtwebkit-conan.py --configure --cmakeargs="%cmake_args%" --qt="%qt_dir%" || exit /b 1
+        set qt_dir=%cd%\Qt\%QT_VERSION%\%TOOL%
+        py Tools\qt\build-qtwebkit-conan.py --configure --cmakeargs="%cmake_args%" --qt="%qt_dir%" || exit /b 1
 
     - name: Configure (macOS/Conan)
       if: runner.os == 'macOS'
