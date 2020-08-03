@@ -120,10 +120,10 @@ jobs:
       if: runner.os == 'Windows'
       shell: powershell  -NoProfile -NonInteractive -File {0}
       env: 
-        QT_INSTALL_DIR: "C:/Qt" 
+        QT_INSTALL_DIR: "D:/Qt" 
       run: |
         where.exe 7z
-        echo ${QT_VERSION}
+        py -m pip install requests semantic_version lxml
         $CONFIG="${{ matrix.config.environment_script }}"
         if($CONFIG -Match "vcvars64.bat"){
           $TOOLCHAIN="win64_msvc2017_64"
@@ -132,7 +132,6 @@ jobs:
           $TOOLCHAIN="win32_msvc2017"
           $DIR="msvc2017"
         }
-        py -m pip install requests semantic_version lxml
         py Tools/qt/qt-downloader windows desktop 5.14.1 ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtwinextras"
         $QTDIR="${QT_INSTALL_DIR}/${QT_VERSION}/${DIR}"
         echo ${QTDIR}
@@ -145,10 +144,10 @@ jobs:
       if: runner.os == 'macOS'
       shell: bash --noprofile --norc -eo pipefail -x {0}
       env: 
-        TOOLCHAIN: "clang_64" 
-        QT_INSTALL_DIR: "~/Qt"   
+        TOOLCHAIN: "clang_64"
       run: |
         pip3 install requests semantic_version lxml
+        QT_INSTALL_DIR="${PWD}/Qt"
         python3 Tools/qt/qt-downloader macos desktop ${QT_VERSION} ${TOOLCHAIN} --output=${QT_INSTALL_DIR} --qt_modules="${QT_MODULES} qtmacextras"
         QTDIR="${QT_INSTALL_DIR}/${QT_VERSION}/${TOOLCHAIN}"
         echo "::set-output name=qt_dir::${QTDIR}"
