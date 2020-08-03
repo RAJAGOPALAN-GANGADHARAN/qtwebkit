@@ -217,7 +217,7 @@ jobs:
     - name: Configure (MSVC)
       if: runner.os == 'Windows' && matrix.config.environment_script != ''
       shell: cmd
-      run: echo on & set qt_dir=%cd%\Qt\%QT_VERSION%\%TOOL% & echo %qt_dir%
+      run: echo on & echo %cd%\Qt\%QT_VERSION%\%TOOL%
 
     - name: Configure (macOS/Conan)
       if: runner.os == 'macOS'
