@@ -122,7 +122,7 @@ jobs:
         #!/bin/bash
         py -m pip install requests semantic_version lxml wsl-path-converter
         CONFIG="${{ matrix.config.environment_script }}"
-        QT_INSTALL_DIR="${PWD}/Qt"
+        QT_INSTALL_DIR="/c/Qt"
         if [[ $CONFIG == *"vcvars64.bat"* ]]; then
           export TOOLCHAIN="win64_msvc2017_64"
           DIR="msvc2017_64"
@@ -135,6 +135,8 @@ jobs:
         echo ${QTDIR}
         Tools/qt/license_writer.sh
         echo "::set-env name=TOOL::$DIR"
+        QTWINDIR="C:\\Qt\\${QT_VERSION}\\${DIR}"
+        echo "::set-output name=qt_dir::${QTWINDIR}"
 
 
     - name: Download Qt Mac
@@ -217,7 +219,7 @@ jobs:
     - name: Configure (MSVC)
       if: runner.os == 'Windows' && matrix.config.environment_script != ''
       shell: cmd
-      run: set qt_dir=%cd%\Qt\%QT_VERSION%\%TOOL% & py Tools\qt\build-qtwebkit-conan.py --configure --cmakeargs="%cmake_args%" --qt="%qt_dir%" || exit /b 1
+      run: py Tools\qt\build-qtwebkit-conan.py --configure --cmakeargs="%cmake_args%" --qt="${{ steps.qt_win.outputs.qt_dir }}" || exit /b 1
 
     - name: Configure (macOS/Conan)
       if: runner.os == 'macOS'
