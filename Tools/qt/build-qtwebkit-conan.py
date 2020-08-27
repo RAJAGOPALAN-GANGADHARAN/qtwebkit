@@ -154,12 +154,14 @@ if args.install_prefix:
 elif args.qt:
     build_vars += ' -o install_prefix="{}"'.format(args.qt)
 
-run_command('conan install {0} -if "{1}" --build=missing --profile={2} {3}'.format(conanfile_path, build_directory, profile_name, build_vars))
 
 if not args.configure and not args.build:
     # If we have neither --configure nor --build, we should do both configure and build (but install only if requested)
     args.configure = True
     args.build = True
+
+if args.configure:
+    run_command('conan install {0} -if "{1}" --build=missing --profile={2} {3}'.format(conanfile_path, build_directory, profile_name, build_vars))
 
 configure_flag = "--configure" if args.configure else ""
 build_flag = "--build" if args.build else ""
