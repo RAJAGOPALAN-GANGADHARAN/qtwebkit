@@ -24,7 +24,7 @@ major,minor,patch=args.version.split('.')
 check_list = template.render(os=args.os,
     major=major,minor=minor,ver_patch=patch).split('\n')
 
-file_count = {"linuxRelease": 109, "windows": 118,"windowsRelease":110, "macosRelease": 170}
+file_count = {"linuxRelease": 109, "windowsDebug": 118,"windowsRelease":110, "macosRelease": 170}
 
 
 def verify_linux(check_list):
@@ -33,12 +33,6 @@ def verify_linux(check_list):
     
     qmake = os.popen('qmake -query').read().split('\n')
     qtD = dict()
-    with open('data/Linux.txt', 'r') as vf:
-        arr = vf.readlines()
-
-    for line in arr:
-        if line.rstrip() not in check_list:
-            print(line)
 
     for q in qmake:
         qq = q.split(':')
