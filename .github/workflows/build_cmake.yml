@@ -250,7 +250,7 @@ jobs:
     - name: Verify (Linux)
       if: runner.os == 'Linux'
       shell: bash --noprofile --norc -eo pipefail -x {0}
-      run: pip3 install jinja2 && Tools/qt/checker.py --version 5.212.0 --os linux
+      run: pip3 install jinja2 && Tools/qt/checker.py --version 5.212.0 --os linux --template=Tools/qt/
 
     - name: Verify (Mac)
       if: runner.os == 'macOS'

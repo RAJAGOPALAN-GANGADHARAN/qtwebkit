@@ -24,7 +24,7 @@ major,minor,patch=args.version.split('.')
 check_list = template.render(os=args.os,
     major=major,minor=minor,ver_patch=patch).split('\n')
 
-file_count = {"linux": 109, "windows": 118,"windowsRelease":110, "macos": 170}
+file_count = {"linuxRelease": 109, "windows": 118,"windowsRelease":110, "macosRelease": 170}
 
 
 def verify_linux(check_list):
