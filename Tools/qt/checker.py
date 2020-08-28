@@ -52,7 +52,7 @@ def verify_linux(check_list):
 
             count+=1
 
-            if not os.path.isfile(chk_path):
+            if not os.path.exists(chk_path):
                 error_list.append(chk_path)
 
     return [error_list, count]
