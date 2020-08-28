@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 from jinja2 import Environment, FileSystemLoader
 import argparse
