@@ -22,9 +22,9 @@ template = env.get_template("QtBinaryChecklist.txt") # load template file
 major,minor,patch=args.version.split('.')
 
 check_list = template.render(os=args.os,
-    major=major,minor=minor,ver_patch=patch).split('\n')
+    major=major,version=args.version).split('\n')
 
-file_count = {"linuxRelease": 109, "windowsDebug": 118,"windowsRelease":110, "macosRelease": 170}
+file_count = {"linuxRelease": 108, "windowsDebug": 118,"windowsRelease":110, "macosRelease": 170}
 
 
 def verify_linux(check_list):
@@ -70,7 +70,7 @@ def verify_windows_mac(check_list):
                 chk_path = os.path.join(args.qt, line)
 
             count+=1
-            if not os.path.isfile(chk_path):
+            if not os.path.exists(chk_path):
                 error_list.append(chk_path)
     
     return [error_list, count]
