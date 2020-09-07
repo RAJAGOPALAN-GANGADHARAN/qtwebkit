@@ -12,6 +12,10 @@ parser.add_argument("--os", help="Operating system", required=True, choices=[ "l
 parser.add_argument("--template", help='Relative path to template file', default="template/QtBinaryChecklist.txt")
 parser.add_argument("--release", help='Release build', action='store_true')
 parser.add_argument("--debug", help='Debug build', action='store_true')
+parser.add_argument("--qt_install_header", help='Qt headers install path')
+parser.add_argument("--qt_install_libs", help='Qt libraries install path')
+parser.add_argument("--qt_install_archdata", help='Qt archdata install path')
+parser.add_argument("--qt_install_libexecs", help='Qt libexecs install path')
 
 args = parser.parse_args()
 
@@ -35,25 +39,17 @@ file_count = {"linux_Release": 108, "windows_Debug": 118,"windows_Release":110, 
 def verify_linux(check_list):
     error_list = []
     count = 0
-    
-    qmake = os.popen('qmake -query').read().split('\n')
-    qtD = dict()
-
-    for q in qmake:
-        qq = q.split(':')
-        if len(qq) == 2:
-            qtD[qq[0]] = qq[1]
 
     for line in check_list:
         if line.rstrip():
             if line.startswith('include/'):
-                chk_path = os.path.join(qtD['QT_INSTALL_HEADERS'], line[len('include/'):])
+                chk_path = os.path.join(args.qt_install_header, line[len('include/'):])
             elif line.startswith('lib/'):
-                chk_path = os.path.join(qtD['QT_INSTALL_LIBS'], line[len('lib/'):])
+                chk_path = os.path.join(args.qt_install_libs, line[len('lib/'):])
             elif line.startswith('mkspecs/') or line.startswith('qml/'):
-                chk_path = os.path.join(qtD['QT_INSTALL_ARCHDATA'], line)
+                chk_path = os.path.join(args.qt_install_archdata, line)
             elif line.startswith('libexec/'):
-                chk_path = os.path.join(qtD['QT_INSTALL_LIBEXECS'], line[len('libexec/'):])
+                chk_path = os.path.join(args.qt_install_libexecs, line[len('libexec/'):])
 
             count+=1
 
