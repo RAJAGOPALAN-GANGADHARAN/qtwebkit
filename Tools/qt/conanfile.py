@@ -111,7 +111,7 @@ class QtWebKitConan(ConanFile):
                 str(self.options.qt), "lib", "cmake", "Qt5")
             print("Qt5 directory:" + cmake.definitions["Qt5_DIR"])
 
-        if self.options.builder_type:
+        if self.options.build_type:
             cmake.build_type = str(self.options.build_type)
 
         if self.options.cmakeargs:
