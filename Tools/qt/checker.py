@@ -5,26 +5,31 @@ import argparse
 import os
 
 parser = argparse.ArgumentParser(description='Checker for Qtwebkit Binaries')
-parser.add_argument("--version",help=r"Version history of the form {major_version}.{minor_version}.{ver_patch}",required=True)
-parser.add_argument("--qt",help="Root of Qt installation")
-parser.add_argument("--build",help="Root of build directory")
-parser.add_argument("--os",help="Operating system",required=True,choices=["linux","macos","windows"])
-parser.add_argument("--template", help="Path of folder containing template file", default="template/")
-parser.add_argument("--build_type", help="Build Type", default="Release", choices=["Release", "Debug"])
+parser.add_argument("--version", help=r"Version history of the form {major_version}.{minor_version}.{ver_patch}", required=True)
+parser.add_argument("--qt", help="Root of Qt installation")
+parser.add_argument("--build", help="Root of build directory")
+parser.add_argument("--os", help="Operating system", required=True, choices=[ "linux", "macos", "windows" ])
+parser.add_argument("--template", help='Relative path to template file', default="template/QtBinaryChecklist.txt")
+parser.add_argument("--release", help='Release build', action='store_true')
+parser.add_argument("--debug", help='Debug build', action='store_true')
 
 args = parser.parse_args()
 
-file_loader = FileSystemLoader(os.path.join(os.getcwd(),args.template)) # directory of template file
+template_abspath = os.path.abspath(args.template)
+template_folder = os.path.dirname(template_abspath)
+template_name = os.path.basename(template_abspath)
+
+file_loader = FileSystemLoader(template_folder) # directory of template file
 env = Environment(loader=file_loader)
 
-template = env.get_template("QtBinaryChecklist.txt") # load template file
+template = env.get_template(template_name) # load template file
 
-major,minor,patch=args.version.split('.')
+major, minor, patch = args.version.split('.')
 
 check_list = template.render(os=args.os,
-    major=major,version=args.version).split('\n')
+    major=major, version=args.version, release=args.release, debug=args.debug).split('\n')
 
-file_count = {"linuxRelease": 108, "windowsDebug": 118,"windowsRelease":110, "macosRelease": 170}
+file_count = {"linux_Release": 108, "windows_Debug": 118,"windows_Release":110, "macos_Release": 170}
 
 
 def verify_linux(check_list):
@@ -81,8 +86,9 @@ if args.os == 'linux':
 elif args.os == 'windows' or args.os == 'macos':
     res = verify_windows_mac(check_list)
 
+build_type = 'Debug' if args.debug else 'Release'
     
-print("Verified {0}/{1} files".format(res[1],file_count[args.os+args.build_type]))
+print("Verified {0}/{1} files".format(res[1],file_count[args.os+'_'+build_type]))
 if len(res[0])!=0:
     print("Errors found files below are missing:")
     for err in res[0]:

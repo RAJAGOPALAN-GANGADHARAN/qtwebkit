@@ -43,8 +43,7 @@ class QtWebKitConan(ConanFile):
     options = {
         "qt": "ANY",
         "cmakeargs": "ANY",
-        "ninjaargs": "ANY",
-        "builder_type": "ANY",
+        "build_type": "ANY",
         "install_prefix": "ANY"
     }
     default_options = {
@@ -113,18 +112,18 @@ class QtWebKitConan(ConanFile):
             print("Qt5 directory:" + cmake.definitions["Qt5_DIR"])
 
         if self.options.builder_type:
-            cmake.build_type = str(self.options.builder_type)
+            cmake.build_type = str(self.options.build_type)
 
         if self.options.cmakeargs:
             cmake_flags = shlex.split(str(self.options.cmakeargs))
         else:
             cmake_flags = None
 
-        if self.options.ninjaargs:
+        if "NINJAFLAGS" in os.environ:
             parser = argparse.ArgumentParser()
             parser.add_argument('-j', default=None, type=int)
             jarg, ninja_flags = parser.parse_known_args(
-                shlex.split(str(self.options.ninjaargs)))
+                shlex.split(os.environ["NINJAFLAGS"]))
             if jarg.j:
                 os.environ['CONAN_CPU_COUNT'] = str(jarg.j)
             ninja_flags.insert(0, '--')

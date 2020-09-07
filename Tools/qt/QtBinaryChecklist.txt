@@ -95,7 +95,7 @@ qml/QtWebKit/experimental/qmldir
 
 
 {% if os=="linux" %}
-
+{% if release %}
 lib/libQt5WebKit.so
 lib/libQt5WebKit.so.{{major}}
 lib/libQt5WebKit.so.{{version}}
@@ -103,9 +103,14 @@ lib/libQt5WebKitWidgets.so
 lib/libQt5WebKitWidgets.so.{{major}}
 lib/libQt5WebKitWidgets.so.{{version}}
 libexec/QtWebPluginProcess
+{% endif %}
+
+{% if debug %}
+lib/libQt5WebKit.so.{{version}}.debug
+lib/libQt5WebKitWidgets.so.{{version}}.debug
+{% endif %}
 
 {% elif os=="macos" %}
-
 lib/QtWebKit.framework/Headers
 lib/QtWebKit.framework/QtWebKit
 lib/QtWebKit.framework/Resources
@@ -178,10 +183,8 @@ lib/QtWebKitWidgets.framework/Versions/{{major}}/QtWebKitWidgets
 lib/QtWebKitWidgets.framework/Versions/{{major}}/Resources/Info.plist
 lib/QtWebKitWidgets.framework/Versions/Current
 
-{% else %}
+{% elif os=="windows" %}
 
-bin/Qt5WebKit.dll
-bin/Qt5WebKitWidgets.dll
 bin/QtWebNetworkProcess.exe
 bin/QtWebProcess.exe
 bin/QtWebStorageProcess.exe
@@ -190,14 +193,23 @@ bin/icuin65.dll
 bin/icuuc65.dll
 bin/libxml2.dll
 bin/libxslt.dll
+
+{% if release %}
+bin/Qt5WebKit.dll
+bin/Qt5WebKitWidgets.dll
 lib/Qt5WebKit.lib
 lib/Qt5WebKitWidgets.lib
 qml/QtWebKit/experimental/qmlwebkitexperimentalplugin.dll
 qml/QtWebKit/qmlwebkitplugin.dll
+{% endif %}
 
-{% if build_type == "Debug" %}
+{% if debug %}
 bin/Qt5WebKitWidgetsd.dll
 bin/Qt5WebKitd.dll
+bin/Qt5WebKit.pdb
+bin/Qt5WebKitd.pdb
+bin/Qt5WebKitWidgets.pdb
+bin/Qt5WebKitWidgetsd.pdb
 lib/Qt5WebKitd.lib
 lib/Qt5WebKitWidgetsd.lib
 lib/cmake/Qt5WebKit/WebKitTargets-debug.cmake

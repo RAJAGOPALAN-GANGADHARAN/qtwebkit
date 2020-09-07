@@ -147,13 +147,15 @@ else:
     profile_name = args.profile
 
 build_vars = f'-o qt="{args.qt}" -o cmakeargs="{args.cmakeargs}" \
--o ninjaargs="{args.ninjaargs}" -o builder_type="{args.build_type}" '
+-o build_type="{args.build_type}" '
 
 if args.install_prefix:
     build_vars += ' -o install_prefix="{}"'.format(args.install_prefix)
 elif args.qt:
     build_vars += ' -o install_prefix="{}"'.format(args.qt)
 
+if args.ninjaargs:
+    os.environ["NINJAFLAGS"] = args.ninjaargs
 
 if not args.configure and not args.build:
     # If we have neither --configure nor --build, we should do both configure and build (but install only if requested)
